@@ -26,6 +26,9 @@ public class ProdutoController {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+	@Autowired 
+	private CategoriaRepository categoriaRepository;
 
 
 	@GetMapping("/todos")
@@ -56,8 +59,16 @@ public class ProdutoController {
 
 	@PostMapping
 	public ResponseEntity<Produto> createProduto(@RequestBody Produto produto) {
-		Produto novoProduto = produtoRepository.save(produto);
-		return new ResponseEntity<>(novoProduto, HttpStatus.CREATED);
+	    if (produto.getCategoria() != null && produto.getCategoria().getIdcategoria() != null) {
+	        Optional<Categoria> categoria = categoriaRepository.findById(produto.getCategoria().getIdcategoria());
+	        if (categoria.isPresent()) {
+	            produto.setCategoria(categoria.get());
+	        } else {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	        }
+	    }
+	    Produto novoProduto = produtoRepository.save(produto);
+	    return new ResponseEntity<>(novoProduto, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{idproduto}")

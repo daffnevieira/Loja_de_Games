@@ -2,7 +2,9 @@ package com.gamestore.loja_de_games.model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,8 +29,10 @@ public class Categoria {
 	@Size(min = 5, max = 100, message = "No mínimo 5 caracteres e máximo 100")
 	private String descricao;
 
-	@OneToMany(mappedBy = "categoria")
-    private List<Produto> produtos;
+	
+	@OneToMany(mappedBy = "categoria", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<Produto> produtos;
+	
 	
 	public Long getIdcategoria() {
 		return idcategoria;
